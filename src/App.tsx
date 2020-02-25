@@ -1,26 +1,45 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import Sidebar from "./components/Sidebar";
+import Notes from "./components/Notes";
+import Editor from "./components/Editor";
+import GlobalStyles from "./styles/GlobalStyles";
+import { ThemeProvider } from "styled-components";
+import theme from "./styles/theme";
+import Container from "./styles/Container";
 
-const App = () => {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  state = {
+    drawerOpen: true,
+    notesDisplayed: true
+  };
+
+  toggleElement = (element: "drawerOpen" | "notesDisplayed") => {
+    this.setState({ [element]: !this.state[element] });
+  };
+
+  render() {
+    const { drawerOpen, notesDisplayed } = this.state;
+
+    return (
+      <ThemeProvider theme={theme}>
+        <GlobalStyles />
+        <Container className="container">
+          <Sidebar drawerOpen={drawerOpen} toggleElement={this.toggleElement} />
+          <Notes drawerOpen={drawerOpen} notesDisplayed={notesDisplayed} />
+          <Editor
+            drawerOpen={drawerOpen}
+            notesDisplayed={notesDisplayed}
+            toggleElement={this.toggleElement}
+          />
+        </Container>
+      </ThemeProvider>
+    );
+  }
 }
 
 export default App;
+
+// $gradient: linear-gradient(180deg, #7b4397, #dc2430);
+// $gradient2: linear-gradient(180deg, #141e30, #243b55);
+// $white: #f2f2f2;
+// $black: #141e30;
