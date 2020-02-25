@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import AppDrawer, {
 	AppDrawerIcon,
 	AppDrawerItem,
@@ -6,35 +6,47 @@ import AppDrawer, {
 	AppDrawerFooter,
 	AppDrawerTogggleIcon,
 	AppDrawerAppIcon,
-	AppDrawerSocialIcons
+	AppDrawerSocialIcons,
+	AppDrawerCollection,
+	AppdrawerCollectionItems,
+	AppDrawerCollectionItem,
+	AppDrawerCollectionHeader,
+	AppDrawerCollectionHeaderText,
+	AppDrawerCollectionItemText
 } from "../styles/AppDrawer";
-import notebookIcon from "../icons/notebook.svg";
-import userIcon from "../icons/icon.png";
-import noteIcon from "../icons/note.svg";
-import ToggleIcon from "../icons/angle-double-left.svg";
-import AppIcon from "../icons/icon.png";
-import GithubIcon from "../icons/github.svg";
-import TwitterIcon from "../icons/twitter.svg";
-import TelegramIcon from "../icons/telegram.svg";
-import InstagramIcon from "../icons/instagram.svg";
-import LinkedinIcon from "../icons/linkedin-in.svg";
+import icons from "../icons";
+
+const {DoubleAngle, SiteIcon,NoteIcon,NotebookIcon, Github, Twitter, Telegram, LinkedIn, Instagram } = icons;
 
 interface SidebarProps {
 	drawerOpen: boolean;
 	toggleElement: (element: "drawerOpen" | "notesDisplayed") => void;
+	notebooks: {id: string; title: string}[];
 }
 
-const Sidebar = ({ drawerOpen, toggleElement }: SidebarProps) => {
-	const toggleSidebar = (e: React.MouseEvent<HTMLAnchorElement>) => {
+const Sidebar = ({ drawerOpen, toggleElement, notebooks }: SidebarProps) => {
+
+	const [notebooksToggle, setNotebooksToggle] = useState(false);
+
+	const toggleSidebar = (e: React.MouseEvent) => {
 		e.preventDefault();
 		toggleElement("drawerOpen");
 	};
+
+	const openNotebooks = () => {
+		if (drawerOpen) {
+			setNotebooksToggle(!notebooksToggle);
+		} else {
+			toggleElement("drawerOpen");
+			setNotebooksToggle(!notebooksToggle);
+		}
+	}
 
 	return (
 		<AppDrawer drawerOpen={drawerOpen} id="sidebar">
 			<AppDrawerItem user>
 				<AppDrawerIcon circular>
-					<img src={userIcon} alt="U" />
+					<SiteIcon />
 				</AppDrawerIcon>
 				<AppDrawerItemText drawerOpen={drawerOpen}>
 					johngicharu10@gmail.com
@@ -42,43 +54,49 @@ const Sidebar = ({ drawerOpen, toggleElement }: SidebarProps) => {
 			</AppDrawerItem>
 			<AppDrawerItem active>
 				<AppDrawerIcon>
-					<img src={noteIcon} alt="ns" />
+					<NoteIcon />
 				</AppDrawerIcon>
 				<AppDrawerItemText drawerOpen={drawerOpen}>All Notes</AppDrawerItemText>
 			</AppDrawerItem>
-			<AppDrawerItem>
+
+			<AppDrawerCollection isOpen={notebooksToggle}>			
+				<AppDrawerCollectionHeader onClick={openNotebooks}>
 				<AppDrawerIcon>
-					<img src={notebookIcon} alt="N" />
+					<NotebookIcon />
 				</AppDrawerIcon>
-				<AppDrawerItemText drawerOpen={drawerOpen}>Notebooks</AppDrawerItemText>
-			</AppDrawerItem>
+					<AppDrawerCollectionHeaderText drawerOpen={drawerOpen}>Notebooks</AppDrawerCollectionHeaderText>
+				</AppDrawerCollectionHeader>
+				<AppdrawerCollectionItems>
+						{
+							notebooks.map(notebook => (
+								<AppDrawerCollectionItem id={notebook.id} key={notebook.id}>
+									<AppDrawerIcon>
+										<NotebookIcon />
+									</AppDrawerIcon>
+							<AppDrawerCollectionItemText drawerOpen={drawerOpen}>{notebook.title}</AppDrawerCollectionItemText>
+								</AppDrawerCollectionItem>
+							))
+						}
+				</AppdrawerCollectionItems>
+			</AppDrawerCollection>
+
 			<AppDrawerTogggleIcon drawerOpen={drawerOpen} onClick={toggleSidebar}>
-				<AppDrawerIcon>
-					<img src={ToggleIcon} alt="toggle" />
+				<AppDrawerIcon className="closeIcon">
+					<DoubleAngle />
 				</AppDrawerIcon>
 			</AppDrawerTogggleIcon>
 			<AppDrawerFooter drawerOpen={drawerOpen}>
 				<AppDrawerAppIcon drawerOpen={drawerOpen}>
-					<img src={AppIcon} alt="Evernote Clone" />
+					<SiteIcon />
 				</AppDrawerAppIcon>
 				<AppDrawerSocialIcons drawerOpen={drawerOpen}>
 					<div>Designed and built by John Gicharu</div>
 					<div className="social">
-						<a href="github.com">
-							<img src={GithubIcon} alt="github" />
-						</a>
-						<a href="twitter.com">
-							<img src={TwitterIcon} alt="twitter" />
-						</a>
-						<a href="telegram.com">
-							<img src={TelegramIcon} alt="telegram" />
-						</a>
-						<a href="instagram.com">
-							<img src={InstagramIcon} alt="instagram" />
-						</a>
-						<a href="linkedin.com">
-							<img src={LinkedinIcon} alt="linkedin" />
-						</a>
+						<Github customLink={"https://github.com"} />
+						<Twitter customLink={"https://twitter.com"} />
+						<Telegram customLink={"https://telegram.com"} />
+						<Instagram customLink={"https://instagram.com"} />
+						<LinkedIn customLink={"https://linked-in.com"} />
 					</div>
 				</AppDrawerSocialIcons>
 			</AppDrawerFooter>
